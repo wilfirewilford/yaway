@@ -130,7 +130,7 @@ class WayWindow:
             print 'Error %s' % e   
             quit()
             
-        ''' Connect to YaWaY Dataabse '''
+        ''' Connect to YaWaY Database '''
         try:
             yaway_conn = psycopg2.connect("dbname='wilford' user='wilford' host='192.168.0.17' password='24Beer'")
             
