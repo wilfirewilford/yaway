@@ -114,7 +114,7 @@ class WayWindow:
 
         ''' Connect to Jive '''
         try:
-            jive_conn = psycopg2.connect("dbname='pervasive' user='postgres' host='192.168.0.73' password='campg'")
+            jive_conn = psycopg2.connect("dbname='jive' user='postgres' host='192.168.0.73' password='xxx'")
             
         except psycopg2.DatabaseError, e:
             print "Error Connecting to Jive!"
@@ -123,16 +123,16 @@ class WayWindow:
             
         ''' Connect to Root 3 '''
         try:
-            root3_conn = psycopg2.connect("dbname='transformer' user='jiveuser' host='192.168.0.72' password='xBbqdMPuhVpB'")
+            root3_conn = psycopg2.connect("dbname='transformer' user='jiveuser' host='192.168.0.72' password='xxx'")
             
         except psycopg2.DatabaseError, e:
             print "Error Connecting to Root3!"
             print 'Error %s' % e   
             quit()
             
-        ''' Connect to YaWaY Database '''
+        ''' Connect to YaWaY Table in the Juice Postgres Database '''
         try:
-            yaway_conn = psycopg2.connect("dbname='wilford' user='wilford' host='192.168.0.17' password='24Beer'")
+            yaway_conn = psycopg2.connect("dbname='Juice' user='yaway_user' host='192.168.0.72' password='xxx'")
             
         except psycopg2.DatabaseError, e:
             print "Error Connecting to Yaway!"
@@ -187,7 +187,7 @@ class WayWindow:
                 ser_num=self.JobBox.get()
                 job_num=self.parse_job(ser_num)
                 cur = jive_conn.cursor()
-                sql_string='''SELECT number,"coilNumber" FROM jobs WHERE number='%s';''' % job_num
+                sql_string='''SELECT number,"coilNumber" FROM view_jobs WHERE number='%s';''' % job_num
                 cur.execute(sql_string)
                 jive_conn.commit()
                 try:
@@ -226,7 +226,7 @@ class WayWindow:
             
     def get_root3_weight (self,coil_num):
         cur = root3_conn.cursor()
-        sql_string='''SELECT coil_number, weight FROM yaway WHERE coil_number='%s';''' % coil_num
+        sql_string='''SELECT transformer_number, coil_weight FROM r3_weights WHERE transformer_number='%s';''' % coil_num
         cur.execute(sql_string)
         root3_conn.commit()
 
@@ -243,6 +243,7 @@ class WayWindow:
             (return_coilnum,coil_weight)=sql_result
             self.target_weight = float(coil_weight)
             self.target_weight_string.set("%5.1f lb" % self.target_weight)
+            print "Coil: %s, Target Weight: %s lb" % (return_coilnum,self.target_weight)
 
         else:
             self.signal("job_not_found","Coil#: %s Not Found in Root3!" % coil_num)
@@ -261,8 +262,11 @@ class WayWindow:
     def store_weight(self,job_num,serial_num):  
         print "Storing: %s, Ser#: %s" % (job_num,serial_num)
         cur = yaway_conn.cursor()
+        winder="NA"
+        machine="NA"
+        plant="CTP"
         
-        sql_string='''INSERT INTO weights (coil_number, job_number,serial_number,weightkg) VALUES ('%s', '%s', '%s', %5.2f);''' % (self.coilnumber.get(),job_num,serial_num,self.stable_weight)
+        sql_string='''INSERT INTO yaway (coil_number, job_number,serial_number,weightkg,winder,machine,plant) VALUES ('%s', '%s', '%s', %5.2f,'%s','%s','%s');''' % (self.coilnumber.get(),job_num,serial_num,self.stable_weight,winder,machine,plant)
         print sql_string
         
         try:
@@ -324,8 +328,7 @@ class WayWindow:
                 self.wt.configure(bg="red") 
                 self.coilnumber.set("  <ERROR>")
                 self.target_weight_string.set("")
-                '''self.JobBox.delete(0, 'end')'''
-                self.update_display=False
+                self.update_display=True
                 
             if status_key=="ZERO_ERR" :
                 self.the_message.set(msg_text.ljust(32))
