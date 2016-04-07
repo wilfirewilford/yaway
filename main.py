@@ -118,7 +118,7 @@ class WayWindow:
             for creds in f.readlines():
                 creds=creds.strip()
                 db_name, db_cred = creds.split(':')
-                print "db_name: %s db_cred:'%s'" % (db_name,db_cred)
+                '''print "db_name: %s db_cred:'%s'" % (db_name,db_cred)'''
         
                 
                 if db_name == 'JIVE' :
