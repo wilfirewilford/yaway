@@ -112,9 +112,35 @@ class WayWindow:
         self.Target.place(x=80,y=155)
         self.Target.pack
 
+       
+        ''' Get Database Credentials From File '''
+        with open('db.config','r') as f:
+            for creds in f.readlines():
+                db_name,db_cred=creds.split(':')
+                
+                if db_name == 'JIVE' :
+                    jive_cred=db_cred
+                    
+                elif db_name == 'ROOT3':
+                    root3_cred=db_cred
+                    
+                elif db_name == 'JUICE':
+                    juice_cred = db_cred
+                        
+                else:
+                    print 'Error with Credentials File!'
+                    quit()
+                
+                        
+        '''with open('db.config') as f:
+            credentials = [x.strip().split(':') for x in f.readlines()]
+
+            for username,password in credentials:'''
+                
         ''' Connect to Jive '''
+                
         try:
-            jive_conn = psycopg2.connect("dbname='jive' user='postgres' host='192.168.0.73' password='xxx'")
+            jive_conn = psycopg2.connect(jive_cred)
             
         except psycopg2.DatabaseError, e:
             print "Error Connecting to Jive!"
@@ -123,7 +149,7 @@ class WayWindow:
             
         ''' Connect to Root 3 '''
         try:
-            root3_conn = psycopg2.connect("dbname='transformer' user='jiveuser' host='192.168.0.72' password='xxx'")
+            root3_conn = psycopg2.connect(root3_cred)
             
         except psycopg2.DatabaseError, e:
             print "Error Connecting to Root3!"
@@ -132,7 +158,7 @@ class WayWindow:
             
         ''' Connect to YaWaY Table in the Juice Postgres Database '''
         try:
-            yaway_conn = psycopg2.connect("dbname='Juice' user='yaway_user' host='192.168.0.72' password='xxx'")
+            yaway_conn = psycopg2.connect(juice_cred)
             
         except psycopg2.DatabaseError, e:
             print "Error Connecting to Yaway!"
