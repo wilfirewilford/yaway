@@ -10,9 +10,10 @@ class Interface:
 
     def __init__(self):
         '''(self, portdata="\\.\COM3", baudrate=9600,timeout=1,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS):'''
-
+        ''' portdata="\\.\COM3" or portdata="/dev/ttyUSB0" '''
+                
         try:
-            self.device = serial.Serial('\\.\COM3',9600,timeout=2,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
+            self.device = serial.Serial('/dev/ttyUSB0',9600,timeout=2,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
             print self.device
             self.debug = True
         except SerialException, e:
