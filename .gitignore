@@ -11,6 +11,10 @@ local.properties
 .loadpath
 desktop.ini
 
+
+# Credentials File
+db.config
+
 # Eclipse Core
 .project
 

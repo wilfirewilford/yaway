@@ -116,7 +116,10 @@ class WayWindow:
         ''' Get Database Credentials From File '''
         with open('db.config','r') as f:
             for creds in f.readlines():
-                db_name,db_cred=creds.split(':')
+                creds=creds.strip()
+                db_name, db_cred = creds.split(':')
+                print "db_name: %s db_cred:'%s'" % (db_name,db_cred)
+        
                 
                 if db_name == 'JIVE' :
                     jive_cred=db_cred
@@ -131,11 +134,6 @@ class WayWindow:
                     print 'Error with Credentials File!'
                     quit()
                 
-                        
-        '''with open('db.config') as f:
-            credentials = [x.strip().split(':') for x in f.readlines()]
-
-            for username,password in credentials:'''
                 
         ''' Connect to Jive '''
                 
